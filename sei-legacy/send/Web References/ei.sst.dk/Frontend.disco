@@ -1,0 +1,4 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<discovery xmlns:scl="http://schemas.xmlsoap.org/disco/scl/" xmlns="http://schemas.xmlsoap.org/disco/">
+  <scl:contractRef docRef="https://ei.sst.dk/test-ei/Frontend.asmx" ref="https://ei.sst.dk/test-ei/Frontend.asmx?wsdl" />
+</discovery>
