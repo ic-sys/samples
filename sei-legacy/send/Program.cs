@@ -24,20 +24,26 @@
 //========================================================================
 
 using System;
-using System.Collections.Generic;
 using System.Web;
-using System.Security;
-using System.Security.Cryptography;
-using System.Security.Cryptography.X509Certificates;
 using System.IO;
 using System.Xml;
+using System.Xml.Serialization;
 using System.Data;
 using System.Text;
+using System.Security;
+using System.Configuration;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Security.Cryptography;
 using System.Security.Cryptography.Xml;
+using System.Security.Cryptography.X509Certificates;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using send.ei.sst.dk;
 
 namespace com.icsys.samples.sei.legacy.send
 {
+
 	// Holds all the information needed to call a backend method
 	public struct Method
 	{
@@ -50,30 +56,32 @@ namespace com.icsys.samples.sei.legacy.send
 	/********************************************************************/
 	// Test indberetning af skema til børnedatabasen.
 	/********************************************************************/
-	class MainClass
+	public class MainClass
 	{
+		private static readonly NameValueCollection appSettings = ConfigurationManager.AppSettings;
 		private static readonly Frontend webservice = new Frontend();
 
 		private const String WebserviceNS = "https://ei.sst.dk";
 
 		public static X509Certificate2 certificate;
 
+
 		public static void Main (string[] args)
 		{
-			certificate = new X509Certificate2(args[0], "Test1234", X509KeyStorageFlags.PersistKeySet | X509KeyStorageFlags.MachineKeySet | X509KeyStorageFlags.Exportable);
+			certificate = new X509Certificate2( appSettings["certPath"], "Test1234", X509KeyStorageFlags.PersistKeySet | X509KeyStorageFlags.MachineKeySet | X509KeyStorageFlags.Exportable);
 
 			Method method			= new Method();
 			method.fullMethodName	= "dk.hob.ei.general.Plugin_Indberet";
 			Object[] arguments = new Object[10]
 			{
 				"letterID",		null,
-				"pluginName",	"dk.hob.ei.bdb.Plugin",
-				"groupID",		"01234567-0123-0123-0123-0123456789ab",
-				"subject",		"Børnedatabase",
+				"pluginName",	appSettings["pluginName"],
+				"groupID",		appSettings["groupID"],
+				"subject",		appSettings["subject"],
 				"document",		null
 			};
-			// Load data (exported from the SEI-client application)
-			arguments[9] = File.ReadAllText(args[1]);
+			// Load data (could for example be exported from the SEI-client application)
+			arguments [9] = (File.ReadAllText (appSettings ["dataPath"], Encoding.UTF8)).Replace("\r\n",string.Empty).Replace("\n",string.Empty);
 
 			method.arguments		= arguments;
 			method.returnType		= typeof(void);
@@ -82,6 +90,7 @@ namespace com.icsys.samples.sei.legacy.send
 			SoapPacket[] sp = new SoapPacket[1];
 			sp[0] = new SoapPacket();
 			sp[0].SoapData = PrepareRequest(method);
+
 
 			ACKPacket[] ack = new ACKPacket[1];
 			ack[0]          = new ACKPacket();
@@ -103,7 +112,7 @@ namespace com.icsys.samples.sei.legacy.send
 
 			return signDoc.OuterXml;
 		}
-
+			
 		/**************************************************************************/
 		// Constructs a SOAP message in XML
 		/**************************************************************************/
@@ -114,14 +123,6 @@ namespace com.icsys.samples.sei.legacy.send
 
 			// <soap:Envelope>
 			XmlElement xmlEnvelope = doc.CreateElement("soap", "Envelope", "http://schemas.xmlsoap.org/soap/envelope/");
-
-			XmlAttribute attr      = doc.CreateAttribute("xmlns", "xsi", "http://www.w3.org/2000/xmlns/");
-			attr.Value             = "http://www.w3.org/2001/XMLSchema-instance";
-			xmlEnvelope.Attributes.Append(attr);
-
-			attr                   = doc.CreateAttribute("xmlns", "xsd", "http://www.w3.org/2000/xmlns/");
-			attr.Value             = "http://www.w3.org/2001/XMLSchema";
-			xmlEnvelope.Attributes.Append(attr);
 
 			// <soap:Body>
 			XmlElement xmlBody     = doc.CreateElement("soap", "Body", "http://schemas.xmlsoap.org/soap/envelope/");
@@ -161,36 +162,22 @@ namespace com.icsys.samples.sei.legacy.send
 			}
 		}
 
+
 		/**************************************************************************/
 		// Sign the document given
 		/**************************************************************************/
 		public static XmlDocument Sign(XmlDocument doc, String dataID)
 		{
-			// Remove the XML declaration
-			foreach (XmlNode ele in doc.ChildNodes)
-			{
-				if (ele.NodeType == XmlNodeType.XmlDeclaration)
-				{
-					doc.RemoveChild(ele);
-					break;
-				}
-			}
-
+			// Sign
 			SignedXml sxml = new SignedXml ();
 			sxml.SigningKey = certificate.PrivateKey;
-			sxml.SignedInfo.CanonicalizationMethod = "http://www.w3.org/TR/2001/REC-xml-c14n-20010315";
+			sxml.SignedInfo.CanonicalizationMethod = SignedXml.XmlDsigC14NTransformUrl;
 
-			DataObject dataObject = new DataObject();
-			dataObject.Data = doc.ChildNodes;
-			dataObject.Id = dataID;
+			DataObject dataObject = new DataObject(dataID,System.Net.Mime.MediaTypeNames.Text.Xml.ToString(),"utf-8",doc.DocumentElement);
 			sxml.AddObject(dataObject);
 
 			Reference reference = new Reference();
 			reference.Uri = "#" + dataID;
-
-			Transform trns = new XmlDsigC14NTransform();
-			reference.AddTransform(trns);
-
 			sxml.AddReference(reference);
 
 			KeyInfo keyInfo = new KeyInfo();
@@ -212,6 +199,7 @@ namespace com.icsys.samples.sei.legacy.send
 			return newDoc;
 		}
 
+
 		/**************************************************************************/
 		// Verify the document given
 		/**************************************************************************/
@@ -226,6 +214,7 @@ namespace com.icsys.samples.sei.legacy.send
 
 			return signedXml.CheckSignature();
 		}
+
 
 		/**************************************************************************/
 		// Send the request to the webservice
