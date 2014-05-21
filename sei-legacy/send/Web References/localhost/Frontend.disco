@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<discovery xmlns:scl="http://schemas.xmlsoap.org/disco/scl/" xmlns="http://schemas.xmlsoap.org/disco/">
+  <scl:contractRef docRef="http://localhost:8080/Frontend.asmx" ref="http://localhost:8080/Frontend.asmx?wsdl" />
+  <soap xmlns:q1="https://ei.ssi.dk/" binding="q1:FrontendSoap" address="http://localhost:8080/Frontend.asmx" xmlns="http://schemas/xmlsoap.org/disco/schema/soap/" />
+  <soap xmlns:q2="https://ei.ssi.dk/" binding="q2:FrontendSoap12" address="http://localhost:8080/Frontend.asmx" xmlns="http://schemas/xmlsoap.org/disco/schema/soap/" />
+</discovery>

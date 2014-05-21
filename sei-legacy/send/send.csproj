@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <ProductVersion>10.0.0</ProductVersion>
+    <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{5CE0CE22-37C1-4060-A3B9-81B29CC05C21}</ProjectGuid>
     <OutputType>Exe</OutputType>
@@ -46,6 +46,9 @@
     <Compile Include="Web References\ei.sst.dk\Reference.cs">
       <DependentUpon>Reference.map</DependentUpon>
     </Compile>
+    <Compile Include="Web References\localhost\Reference.cs">
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -53,6 +56,12 @@
     <None Include="Web References\ei.sst.dk\Frontend.wsdl" />
     <None Include="Web References\ei.sst.dk\Frontend.disco" />
     <None Include="Web References\ei.sst.dk\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Web References\localhost\Frontend.disco" />
+    <None Include="Web References\localhost\Frontend.wsdl" />
+    <None Include="Web References\localhost\Reference.map">
       <Generator>MSDiscoCodeGenerator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
@@ -65,6 +74,11 @@
       <UrlBehavior>Dynamic</UrlBehavior>
       <RelPath>Web References\ei.sst.dk</RelPath>
       <UpdateFromURL>https://ei.sst.dk/test-ei/Frontend.asmx</UpdateFromURL>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="http://localhost:8080/Frontend.asmx">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\localhost</RelPath>
+      <UpdateFromURL>http://localhost:8080/Frontend.asmx</UpdateFromURL>
     </WebReferenceUrl>
   </ItemGroup>
 </Project>

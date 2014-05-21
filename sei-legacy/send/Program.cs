@@ -32,7 +32,9 @@ using System.Collections.Specialized;
 using System.Security.Cryptography;
 using System.Security.Cryptography.Xml;
 using System.Security.Cryptography.X509Certificates;
-using send.ei.sst.dk;
+
+using send.localhost;		// local debugging (http://localhost:8080/Frontend.asmx)
+//using send.ei.sst.dk;		// remote test system (https://ei.sst.dk/test-ei/Frontend.asmx)
 
 namespace com.icsys.samples.sei.legacy.send
 {
@@ -45,7 +47,7 @@ namespace com.icsys.samples.sei.legacy.send
 		public Type returnType;
 		public String preparedRequest;
 	}
-
+		
 	/********************************************************************/
 	//
 	/********************************************************************/
@@ -118,7 +120,10 @@ namespace com.icsys.samples.sei.legacy.send
 				SoapPacket[] sp = webservice.GetPackets2 (ids, MethodNames);
 				if (sp.Length > 0)
 				{
-					System.Console.WriteLine (sp [0].SoapData);
+					if( sp[0].Found )
+						System.Console.WriteLine (sp [0].SoapData);
+					else
+						System.Console.WriteLine ("No response before timeout.");
 				}
 			}
 		}

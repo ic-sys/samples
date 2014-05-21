@@ -1,0 +1,431 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:s0="https://ei.ssi.dk/" name="Frontend" targetNamespace="https://ei.ssi.dk/" xmlns="http://schemas.xmlsoap.org/wsdl/">
+  <types>
+    <xs:schema elementFormDefault="qualified" targetNamespace="https://ei.ssi.dk/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+      <xs:complexType name="ArrayOfSoapPacket">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="SoapPacket" type="s0:SoapPacket" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="SoapPacket">
+        <xs:complexContent mixed="false">
+          <xs:extension base="s0:ValueType">
+            <xs:sequence>
+              <xs:element minOccurs="0" maxOccurs="1" name="SoapData" type="xs:string" />
+              <xs:element minOccurs="1" maxOccurs="1" name="Found" type="xs:boolean" />
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:complexType name="ValueType" />
+      <xs:complexType name="ErrorMessage">
+        <xs:complexContent mixed="false">
+          <xs:extension base="s0:ValueType">
+            <xs:sequence>
+              <xs:element minOccurs="1" maxOccurs="1" name="errorCode" type="xs:int" />
+              <xs:element minOccurs="0" maxOccurs="1" name="errorString" type="xs:string" />
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:complexType name="SendPacketsWithValidationResult">
+        <xs:complexContent mixed="false">
+          <xs:extension base="s0:ValueType">
+            <xs:sequence>
+              <xs:element minOccurs="0" maxOccurs="1" name="PacketIDs" type="s0:ArrayOfString" />
+              <xs:element minOccurs="0" maxOccurs="1" name="ErrorMessages" type="s0:ArrayOfErrorMessage" />
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:complexType name="ArrayOfString">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="string" nillable="true" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="ArrayOfErrorMessage">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="ErrorMessage" type="s0:ErrorMessage" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="ACKPacket">
+        <xs:complexContent mixed="false">
+          <xs:extension base="s0:ValueType">
+            <xs:sequence>
+              <xs:element minOccurs="1" maxOccurs="1" name="Priority" type="s0:PacketPriority" />
+              <xs:element minOccurs="0" maxOccurs="1" name="PacketID" type="xs:string" />
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:simpleType name="PacketPriority">
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="OneWay" />
+          <xs:enumeration value="High" />
+          <xs:enumeration value="Admin" />
+          <xs:enumeration value="OWAdmin" />
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:element name="SendPacketsWithValidation">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" maxOccurs="1" name="Packets" type="s0:ArrayOfSoapPacket" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="SendPacketsWithValidationResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="1" maxOccurs="1" name="SendPacketsWithValidationResult" type="s0:SendPacketsWithValidationResult" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="SendPackets">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" maxOccurs="1" name="Packets" type="s0:ArrayOfSoapPacket" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="SendPacketsResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" maxOccurs="1" name="SendPacketsResult" type="s0:ArrayOfString" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:complexType name="ArrayOfACKPacket">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="ACKPacket" type="s0:ACKPacket" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:element name="SendACKPackets">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" maxOccurs="1" name="Packets" type="s0:ArrayOfACKPacket" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="SendACKPacketsResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="1" maxOccurs="1" name="SendACKPacketsResult" type="xs:boolean" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="GetPackets">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" maxOccurs="1" name="PacketIDs" type="s0:ArrayOfString" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="GetPacketsResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" maxOccurs="1" name="GetPacketsResult" type="s0:ArrayOfSoapPacket" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="GetPackets2">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" maxOccurs="1" name="PacketIDs" type="s0:ArrayOfString" />
+            <xs:element minOccurs="0" maxOccurs="1" name="OriginalMethodNames" type="s0:ArrayOfString" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="GetPackets2Response">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" maxOccurs="1" name="GetPackets2Result" type="s0:ArrayOfSoapPacket" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="ArrayOfSoapPacket" nillable="true" type="s0:ArrayOfSoapPacket" />
+    </xs:schema>
+    <xs:schema xmlns:tns="https://ei.ssi.dk/AbstractTypes" targetNamespace="https://ei.ssi.dk/AbstractTypes" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+      <xs:import namespace="http://schemas.xmlsoap.org/soap/encoding/" />
+      <xs:import namespace="http://schemas.xmlsoap.org/wsdl/" />
+      <xs:complexType name="ArrayOfString">
+        <xs:complexContent mixed="false">
+          <xs:restriction base="soapenc:Array">
+            <xs:attribute xmlns:d7p1="http://schemas.xmlsoap.org/wsdl/" d7p2:arrayType="xs:string[]" ref="soapenc:arrayType" xmlns:d7p2="http://schemas.xmlsoap.org/wsdl/" />
+          </xs:restriction>
+        </xs:complexContent>
+      </xs:complexType>
+    </xs:schema>
+  </types>
+  <message name="SendPacketsWithValidationSoapIn">
+    <part name="parameters" element="s0:SendPacketsWithValidation" />
+  </message>
+  <message name="SendPacketsWithValidationSoapOut">
+    <part name="parameters" element="s0:SendPacketsWithValidationResponse" />
+  </message>
+  <message name="SendPacketsSoapIn">
+    <part name="parameters" element="s0:SendPackets" />
+  </message>
+  <message name="SendPacketsSoapOut">
+    <part name="parameters" element="s0:SendPacketsResponse" />
+  </message>
+  <message name="SendACKPacketsSoapIn">
+    <part name="parameters" element="s0:SendACKPackets" />
+  </message>
+  <message name="SendACKPacketsSoapOut">
+    <part name="parameters" element="s0:SendACKPacketsResponse" />
+  </message>
+  <message name="GetPacketsSoapIn">
+    <part name="parameters" element="s0:GetPackets" />
+  </message>
+  <message name="GetPacketsSoapOut">
+    <part name="parameters" element="s0:GetPacketsResponse" />
+  </message>
+  <message name="GetPackets2SoapIn">
+    <part name="parameters" element="s0:GetPackets2" />
+  </message>
+  <message name="GetPackets2SoapOut">
+    <part name="parameters" element="s0:GetPackets2Response" />
+  </message>
+  <message name="GetPacketsHttpGetIn">
+    <part xmlns:q1="https://ei.ssi.dk/AbstractTypes" name="PacketIDs" type="q1:ArrayOfString" />
+  </message>
+  <message name="GetPacketsHttpGetOut">
+    <part name="Body" element="s0:ArrayOfSoapPacket" />
+  </message>
+  <message name="GetPackets2HttpGetIn">
+    <part xmlns:q2="https://ei.ssi.dk/AbstractTypes" name="PacketIDs" type="q2:ArrayOfString" />
+    <part xmlns:q3="https://ei.ssi.dk/AbstractTypes" name="OriginalMethodNames" type="q3:ArrayOfString" />
+  </message>
+  <message name="GetPackets2HttpGetOut">
+    <part name="Body" element="s0:ArrayOfSoapPacket" />
+  </message>
+  <message name="GetPacketsHttpPostIn">
+    <part xmlns:q4="https://ei.ssi.dk/AbstractTypes" name="PacketIDs" type="q4:ArrayOfString" />
+  </message>
+  <message name="GetPacketsHttpPostOut">
+    <part name="Body" element="s0:ArrayOfSoapPacket" />
+  </message>
+  <message name="GetPackets2HttpPostIn">
+    <part xmlns:q5="https://ei.ssi.dk/AbstractTypes" name="PacketIDs" type="q5:ArrayOfString" />
+    <part xmlns:q6="https://ei.ssi.dk/AbstractTypes" name="OriginalMethodNames" type="q6:ArrayOfString" />
+  </message>
+  <message name="GetPackets2HttpPostOut">
+    <part name="Body" element="s0:ArrayOfSoapPacket" />
+  </message>
+  <portType name="FrontendSoap">
+    <operation name="SendPacketsWithValidation">
+      <input message="s0:SendPacketsWithValidationSoapIn" />
+      <output message="s0:SendPacketsWithValidationSoapOut" />
+    </operation>
+    <operation name="SendPackets">
+      <input message="s0:SendPacketsSoapIn" />
+      <output message="s0:SendPacketsSoapOut" />
+    </operation>
+    <operation name="SendACKPackets">
+      <input message="s0:SendACKPacketsSoapIn" />
+      <output message="s0:SendACKPacketsSoapOut" />
+    </operation>
+    <operation name="GetPackets">
+      <input message="s0:GetPacketsSoapIn" />
+      <output message="s0:GetPacketsSoapOut" />
+    </operation>
+    <operation name="GetPackets2">
+      <input message="s0:GetPackets2SoapIn" />
+      <output message="s0:GetPackets2SoapOut" />
+    </operation>
+  </portType>
+  <portType name="FrontendSoap12">
+    <operation name="SendPacketsWithValidation">
+      <input message="s0:SendPacketsWithValidationSoapIn" />
+      <output message="s0:SendPacketsWithValidationSoapOut" />
+    </operation>
+    <operation name="SendPackets">
+      <input message="s0:SendPacketsSoapIn" />
+      <output message="s0:SendPacketsSoapOut" />
+    </operation>
+    <operation name="SendACKPackets">
+      <input message="s0:SendACKPacketsSoapIn" />
+      <output message="s0:SendACKPacketsSoapOut" />
+    </operation>
+    <operation name="GetPackets">
+      <input message="s0:GetPacketsSoapIn" />
+      <output message="s0:GetPacketsSoapOut" />
+    </operation>
+    <operation name="GetPackets2">
+      <input message="s0:GetPackets2SoapIn" />
+      <output message="s0:GetPackets2SoapOut" />
+    </operation>
+  </portType>
+  <portType name="FrontendHttpGet">
+    <operation name="GetPackets">
+      <input message="s0:GetPacketsHttpGetIn" />
+      <output message="s0:GetPacketsHttpGetOut" />
+    </operation>
+    <operation name="GetPackets2">
+      <input message="s0:GetPackets2HttpGetIn" />
+      <output message="s0:GetPackets2HttpGetOut" />
+    </operation>
+  </portType>
+  <portType name="FrontendHttpPost">
+    <operation name="GetPackets">
+      <input message="s0:GetPacketsHttpPostIn" />
+      <output message="s0:GetPacketsHttpPostOut" />
+    </operation>
+    <operation name="GetPackets2">
+      <input message="s0:GetPackets2HttpPostIn" />
+      <output message="s0:GetPackets2HttpPostOut" />
+    </operation>
+  </portType>
+  <binding name="FrontendSoap" type="s0:FrontendSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <operation name="SendPacketsWithValidation">
+      <soap:operation soapAction="https://ei.ssi.dk/SendPacketsWithValidation" style="document" />
+      <input>
+        <soap:body use="literal" />
+      </input>
+      <output>
+        <soap:body use="literal" />
+      </output>
+    </operation>
+    <operation name="SendPackets">
+      <soap:operation soapAction="https://ei.ssi.dk/SendPackets" style="document" />
+      <input>
+        <soap:body use="literal" />
+      </input>
+      <output>
+        <soap:body use="literal" />
+      </output>
+    </operation>
+    <operation name="SendACKPackets">
+      <soap:operation soapAction="https://ei.ssi.dk/SendACKPackets" style="document" />
+      <input>
+        <soap:body use="literal" />
+      </input>
+      <output>
+        <soap:body use="literal" />
+      </output>
+    </operation>
+    <operation name="GetPackets">
+      <soap:operation soapAction="https://ei.ssi.dk/GetPackets" style="document" />
+      <input>
+        <soap:body use="literal" />
+      </input>
+      <output>
+        <soap:body use="literal" />
+      </output>
+    </operation>
+    <operation name="GetPackets2">
+      <soap:operation soapAction="https://ei.ssi.dk/GetPackets2" style="document" />
+      <input>
+        <soap:body use="literal" />
+      </input>
+      <output>
+        <soap:body use="literal" />
+      </output>
+    </operation>
+  </binding>
+  <binding name="FrontendSoap12" type="s0:FrontendSoap12">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <operation name="SendPacketsWithValidation">
+      <soap12:operation soapAction="https://ei.ssi.dk/SendPacketsWithValidation" style="document" />
+      <input>
+        <soap12:body use="literal" />
+      </input>
+      <output>
+        <soap12:body use="literal" />
+      </output>
+    </operation>
+    <operation name="SendPackets">
+      <soap12:operation soapAction="https://ei.ssi.dk/SendPackets" style="document" />
+      <input>
+        <soap12:body use="literal" />
+      </input>
+      <output>
+        <soap12:body use="literal" />
+      </output>
+    </operation>
+    <operation name="SendACKPackets">
+      <soap12:operation soapAction="https://ei.ssi.dk/SendACKPackets" style="document" />
+      <input>
+        <soap12:body use="literal" />
+      </input>
+      <output>
+        <soap12:body use="literal" />
+      </output>
+    </operation>
+    <operation name="GetPackets">
+      <soap12:operation soapAction="https://ei.ssi.dk/GetPackets" style="document" />
+      <input>
+        <soap12:body use="literal" />
+      </input>
+      <output>
+        <soap12:body use="literal" />
+      </output>
+    </operation>
+    <operation name="GetPackets2">
+      <soap12:operation soapAction="https://ei.ssi.dk/GetPackets2" style="document" />
+      <input>
+        <soap12:body use="literal" />
+      </input>
+      <output>
+        <soap12:body use="literal" />
+      </output>
+    </operation>
+  </binding>
+  <binding name="FrontendHttpGet" type="s0:FrontendHttpGet">
+    <http:binding verb="GET" />
+    <operation name="GetPackets">
+      <http:operation location="/GetPackets" />
+      <input>
+        <http:urlEncoded />
+      </input>
+      <output>
+        <mime:mimeXml part="Body" />
+      </output>
+    </operation>
+    <operation name="GetPackets2">
+      <http:operation location="/GetPackets2" />
+      <input>
+        <http:urlEncoded />
+      </input>
+      <output>
+        <mime:mimeXml part="Body" />
+      </output>
+    </operation>
+  </binding>
+  <binding name="FrontendHttpPost" type="s0:FrontendHttpPost">
+    <http:binding verb="POST" />
+    <operation name="GetPackets">
+      <http:operation location="/GetPackets" />
+      <input>
+        <mime:content part="" type="application/x-www-form-urlencoded" />
+      </input>
+      <output>
+        <mime:mimeXml part="Body" />
+      </output>
+    </operation>
+    <operation name="GetPackets2">
+      <http:operation location="/GetPackets2" />
+      <input>
+        <mime:content part="" type="application/x-www-form-urlencoded" />
+      </input>
+      <output>
+        <mime:mimeXml part="Body" />
+      </output>
+    </operation>
+  </binding>
+  <service name="Frontend">
+    <port name="FrontendSoap" binding="s0:FrontendSoap">
+      <soap:address location="http://localhost:8080/Frontend.asmx" />
+    </port>
+    <port name="FrontendSoap12" binding="s0:FrontendSoap12">
+      <soap12:address location="http://localhost:8080/Frontend.asmx" />
+    </port>
+    <port name="FrontendHttpGet" binding="s0:FrontendHttpGet">
+      <http:address location="http://localhost:8080/Frontend.asmx" />
+    </port>
+    <port name="FrontendHttpPost" binding="s0:FrontendHttpPost">
+      <http:address location="http://localhost:8080/Frontend.asmx" />
+    </port>
+  </service>
+</definitions>
