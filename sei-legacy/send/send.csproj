@@ -43,25 +43,25 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Web References\ei.sst.dk\Reference.cs">
+    <Compile Include="Web References\localhost\Reference.cs">
       <DependentUpon>Reference.map</DependentUpon>
     </Compile>
-    <Compile Include="Web References\localhost\Reference.cs">
+    <Compile Include="Web References\testei.sst.dk\Reference.cs">
       <DependentUpon>Reference.map</DependentUpon>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="Web References\ei.sst.dk\Frontend.wsdl" />
-    <None Include="Web References\ei.sst.dk\Frontend.disco" />
-    <None Include="Web References\ei.sst.dk\Reference.map">
-      <Generator>MSDiscoCodeGenerator</Generator>
-      <LastGenOutput>Reference.cs</LastGenOutput>
-    </None>
     <None Include="Web References\localhost\Frontend.disco" />
     <None Include="Web References\localhost\Frontend.wsdl" />
     <None Include="Web References\localhost\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Web References\testei.sst.dk\Frontend.wsdl" />
+    <None Include="Web References\testei.sst.dk\Frontend.disco" />
+    <None Include="Web References\testei.sst.dk\Reference.map">
       <Generator>MSDiscoCodeGenerator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
@@ -70,15 +70,15 @@
     <WebReferences Include="Web References" />
   </ItemGroup>
   <ItemGroup>
-    <WebReferenceUrl Include="https://ei.sst.dk/test-ei/Frontend.asmx">
-      <UrlBehavior>Dynamic</UrlBehavior>
-      <RelPath>Web References\ei.sst.dk</RelPath>
-      <UpdateFromURL>https://ei.sst.dk/test-ei/Frontend.asmx</UpdateFromURL>
-    </WebReferenceUrl>
     <WebReferenceUrl Include="http://localhost:8080/Frontend.asmx">
       <UrlBehavior>Dynamic</UrlBehavior>
       <RelPath>Web References\localhost</RelPath>
       <UpdateFromURL>http://localhost:8080/Frontend.asmx</UpdateFromURL>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="https://ei.sst.dk/test-ei/Frontend.asmx">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\testei.sst.dk</RelPath>
+      <UpdateFromURL>https://ei.sst.dk/test-ei/Frontend.asmx</UpdateFromURL>
     </WebReferenceUrl>
   </ItemGroup>
 </Project>

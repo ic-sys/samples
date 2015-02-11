@@ -1,6 +1,6 @@
 //========================================================================
 //
-// Copyright (c) 2014 Thomas Hagen Johansen <thj@ic-sys.com>
+// Copyright (c) 2014/2015 Thomas Hagen Johansen <thj@ic-sys.com>
 //
 // This software is provided 'as-is', without any express or implied
 // warranty. In no event will the authors be held liable for any damages
@@ -33,8 +33,8 @@ using System.Security.Cryptography;
 using System.Security.Cryptography.Xml;
 using System.Security.Cryptography.X509Certificates;
 
-using send.localhost;		// local debugging (http://localhost:8080/Frontend.asmx)
-//using send.ei.sst.dk;		// remote test system (https://ei.sst.dk/test-ei/Frontend.asmx)
+//using send.localhost;		// local debugging (http://localhost:8080/Frontend.asmx)
+using send.testei.sst.dk;		// remote test system (https://ei.sst.dk/test-ei/Frontend.asmx)
 
 namespace com.icsys.samples.sei.legacy.send
 {
@@ -68,7 +68,9 @@ namespace com.icsys.samples.sei.legacy.send
 			certificate = new X509Certificate2( appSettings["certPath"], "Test1234", X509KeyStorageFlags.PersistKeySet | X509KeyStorageFlags.MachineKeySet | X509KeyStorageFlags.Exportable);
 
 			//Report ();
+			//Cancel ();
 			GetUserDetailsByCPREx ();
+			//AuthoriseUser ();
 		}
 
 		/**************************************************************************/
@@ -96,10 +98,38 @@ namespace com.icsys.samples.sei.legacy.send
 			ack[0].PacketID = null;
 			ack[0].Priority = packetPriority;
 
+
 			if( withValidation )
 				return SendPacketsWithValidation(method, sp, ack);
 			else
 				return SendPackets(method, sp, ack);
+		}
+
+		/**************************************************************************/
+		// Call backend method "dk.hob.ei.general.Plugin_CancelDocument"
+		/**************************************************************************/
+		public static void Cancel()
+		{
+			Object[] arguments = new Object[6]
+			{
+				"documentID",	appSettings ["documentID"],
+				"pluginName",	appSettings ["pluginName"],
+				"groupID",		appSettings ["groupID"]
+			};
+
+			string[] MethodNames = {"dk.hob.ei.general.Plugin_CancelDocument"};
+			string[] ids = Call(MethodNames[0], arguments, PacketPriority.High, false);
+			if (ids.Length > 0)
+			{
+				SoapPacket[] sp = webservice.GetPackets2 (ids, MethodNames);
+				if (sp.Length > 0)
+				{
+					if( sp[0].Found )
+						System.Console.WriteLine (sp [0].SoapData);
+					else
+						System.Console.WriteLine ("No response before timeout.");
+				}
+			}
 		}
 
 		/**************************************************************************/
@@ -129,6 +159,31 @@ namespace com.icsys.samples.sei.legacy.send
 		}
 
 		/**************************************************************************/
+		// Call backend method "dk.hob.ei.general.Plugin_AuthoriseUser"
+		/**************************************************************************/
+		public static void AuthoriseUser()
+		{
+			Object[] arguments = new Object[2]
+			{
+				"document",		null
+			};
+			FillDocument (arguments);
+			Call("dk.hob.ei.general.Plugin_AuthoriseUser", arguments, PacketPriority.OneWay, false);
+		}
+
+
+
+		/**************************************************************************/
+		// Call backend method "dk.hob.ei.general.Plugin_AuthoriseUser"
+		/**************************************************************************/
+		public static void FillDocument(Object[] arguments)
+		{
+			// Load data - for example, exported from the SEI-client application
+			arguments [arguments.Length-1] = (File.ReadAllText (appSettings ["dataPath"], Encoding.UTF8)).Replace("\r\n",string.Empty).Replace("\n",string.Empty);
+		}
+
+
+		/**************************************************************************/
 		// Call backend method "dk.hob.ei.general.Plugin_Indberet"
 		/**************************************************************************/
 		public static void Report()
@@ -141,12 +196,9 @@ namespace com.icsys.samples.sei.legacy.send
 				"subject",		appSettings["subject"],
 				"document",		null
 			};
-			// Load data - for example, exported from the SEI-client application
-			arguments [9] = (File.ReadAllText (appSettings ["dataPath"], Encoding.UTF8)).Replace("\r\n",string.Empty).Replace("\n",string.Empty);
-
+			FillDocument (arguments);
 			Call("dk.hob.ei.general.Plugin_Indberet", arguments, PacketPriority.OneWay, true);
 		}
-
 
 		/**************************************************************************/
 		// Constructs a SOAP message in XML
